@@ -220,6 +220,10 @@ FCM.setNotificationCategories = (categories) => {
   }
 }
 
+FCM.setNotificationColor = (color) => {
+  RNFIRMessaging.setNotificationColor(color);
+};
+
 export default FCM;
 
 export {};

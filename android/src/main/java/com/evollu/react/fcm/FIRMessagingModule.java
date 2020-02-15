@@ -286,6 +286,11 @@ public class FIRMessagingModule extends ReactContextBaseJavaModule implements Li
         fm.send(message.build());
     }
 
+    @ReactMethod
+    public void setNotificationColor(String color) {
+        FIRLocalMessagingHelper.notificationColor = color;
+    }
+
     private String getStringFromReadableMap(ReadableMap map, String key) throws Exception {
         switch (map.getType(key)) {
             case String:

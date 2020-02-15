@@ -25,6 +25,8 @@ public class FIRLocalMessagingHelper {
 
     private Context mContext;
     private SharedPreferences sharedPreferences = null;
+    static String notificationColor = "";
+
 
     public FIRLocalMessagingHelper(Application context) {
         mContext = context;
@@ -43,6 +45,32 @@ public class FIRLocalMessagingHelper {
     }
 
     public void sendNotification(Bundle bundle) {
+	 try {
+            if (bundle != null && bundle.getString("color") == null) {
+                if(sharedPreferences.getString("notification_color",null)==null) {
+
+                    String notifColor = notificationColor != null ? notificationColor : "";
+		    if(!notifColor.isEmpty()){
+		            try {
+		                Color.parseColor(notifColor);
+		                bundle.putString("color", notifColor);
+		                sharedPreferences.edit().putString("notification_color",notifColor).commit();
+		            } catch (IllegalArgumentException e) {
+		            }
+		   }
+                }else{
+                    String notifColor = sharedPreferences.getString("notification_color","");
+		    if(!notifColor.isEmpty()){
+		            try {
+		                Color.parseColor(notifColor);
+		                bundle.putString("color", notifColor);
+		            } catch (IllegalArgumentException e) {
+		            }
+		    }
+                }
+            }
+        }catch (Exception e){}
+
         new SendNotificationTask(mContext, sharedPreferences, mIsForeground, bundle).execute();
     }
 
