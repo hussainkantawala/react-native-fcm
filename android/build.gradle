@@ -4,8 +4,8 @@ def DEFAULT_COMPILE_SDK_VERSION             = 28
 def DEFAULT_BUILD_TOOLS_VERSION             = "28.0.2"
 def DEFAULT_TARGET_SDK_VERSION              = 28
 def DEFAULT_GOOGLE_PLAY_SERVICES_VERSION    = "+"
-def DEFAULT_FIREBASE_CORE_VERSION           = "+"
-def DEFAULT_FIREBASE_MESSAGING_VERSION      = "+"
+def DEFAULT_FIREBASE_CORE_VERSION           = "16.0.6"
+def DEFAULT_FIREBASE_MESSAGING_VERSION      = "17.3.4"
 
 android {
     compileSdkVersion project.hasProperty('compileSdkVersion') ? project.compileSdkVersion : DEFAULT_COMPILE_SDK_VERSION
@@ -29,7 +29,7 @@ dependencies {
     def firebaseMessagingVersion = project.hasProperty('firebaseMessagingVersion') ? project.firebaseMessagingVersion : DEFAULT_FIREBASE_MESSAGING_VERSION
 
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile 'com.facebook.react:react-native:+'
+    compile 'com.facebook.react:react-native:0.59.10'
     compile "com.google.firebase:firebase-core:$firebaseCoreVersion"
     compile "com.google.firebase:firebase-messaging:$firebaseMessagingVersion"
     compile 'me.leolin:ShortcutBadger:1.1.17@aar'

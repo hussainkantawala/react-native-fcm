@@ -2,6 +2,7 @@ package com.evollu.react.fcm;
 
 import java.util.Map;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -83,14 +84,23 @@ public class MessagingService extends FirebaseMessagingService {
             return;
         }
         Map<String, String> data = remoteMessage.getData();
-        String customNotification = data.get("custom_notification");
-        if(customNotification != null){
+        String message = data.get("message");
+        if(message != null){
             try {
-                Bundle bundle = BundleJSONConverter.convertToBundle(new JSONObject(customNotification));
+                Bundle bundle = BundleJSONConverter.convertToBundle(new JSONObject(remoteMessage.getData()));
                 FIRLocalMessagingHelper helper = new FIRLocalMessagingHelper(this.getApplication());
+                ApplicationInfo appInfo = getApplicationContext().getApplicationInfo();
+                String ticker = getApplicationContext().getPackageManager().getApplicationLabel(appInfo).toString();
+                bundle.putString("body",message);
+                bundle.putString("ticker",ticker);
+                bundle.putString("icon","ic_notification");
+                bundle.putString("hiddenMessage",data.get("hiddenMessage"));
+				 bundle.putString("priority",data.get("priority"));
+                bundle.putBoolean("wake_screen",Boolean.valueOf(data.get("wake_screen")));
                 helper.sendNotification(bundle);
-            } catch (JSONException e) {
-                e.printStackTrace();
+            } catch (Exception e) {
+				Log.e(TAG, "buildLocalNotification exception :"+e.getLocalizedMessage());
+               // e.printStackTrace();
             }
 
         }

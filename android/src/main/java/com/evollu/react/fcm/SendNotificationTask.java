@@ -21,6 +21,13 @@ import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
+
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.bridge.WritableArray;
 
@@ -41,12 +48,21 @@ public class SendNotificationTask extends AsyncTask<Void, Void, Void> {
     private Bundle bundle;
     private SharedPreferences sharedPreferences;
     private Boolean mIsForeground;
+	static String notificationChannelId;
+    static String notificationChannelName;
 
     SendNotificationTask(Context context, SharedPreferences sharedPreferences, Boolean mIsForeground, Bundle bundle){
         this.mContext = context;
         this.bundle = bundle;
         this.sharedPreferences = sharedPreferences;
         this.mIsForeground = mIsForeground;
+		notificationChannelId  = context.getApplicationContext().getPackageName();
+    	ApplicationInfo appInfo = context.getApplicationInfo();
+        notificationChannelName = context.getApplicationContext().getPackageManager().getApplicationLabel(appInfo).toString();
+        if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.O){
+            NotificationManager notificationManager= (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+            notificationManager.createNotificationChannel(new NotificationChannel(notificationChannelId,notificationChannelName, NotificationManager.IMPORTANCE_HIGH));
+        }
     }
 
     protected Void doInBackground(Void... params) {
@@ -78,7 +94,7 @@ public class SendNotificationTask extends AsyncTask<Void, Void, Void> {
             String subText = bundle.getString("sub_text");
             if (subText != null) subText = URLDecoder.decode( subText, "UTF-8" );
 
-            NotificationCompat.Builder notification = new NotificationCompat.Builder(mContext, bundle.getString("channel"))
+           NotificationCompat.Builder notification = new NotificationCompat.Builder(mContext,notificationChannelId)
                     .setContentTitle(title)
                     .setContentText(body)
                     .setTicker(ticker)
